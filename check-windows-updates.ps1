@@ -1,4 +1,29 @@
-# Windows Update Check PS1 optimized by Fabio
+#
+#   check-windows-updates.ps1
+#
+# DESCRIPTION:
+#   This plugin collects the name, state/status of the Apppool in IIS, with functionality for missing/or mispelled apppools
+#
+# OUTPUT:
+#   plain text
+#
+# PLATFORMS:
+#   Windows
+#
+# DEPENDENCIES:
+#   Powershell 3.0 or above
+#
+# USAGE:
+#   Powershell.exe -NonInteractive -NoProfile -ExecutionPolicy Bypass -NoLogo -File check-windows-updates.ps1
+#
+# NOTES:
+#
+# LICENSE:
+#   Copyright 2020 sensu-plugins
+#   Released under the same terms as Sensu (the MIT license); see LICENSE for details.
+#
+#   Windows Updates Checks optimized by Fabio
+# Parsing of Sensu Variable to powershell
 [int]$intResult = 0 
 #Grabs all updates waiting
 $data = {@()}.Invoke(); $upS = New-Object -ComObject Microsoft.Update.Session; $srch = $upS.CreateupdateSearcher();
