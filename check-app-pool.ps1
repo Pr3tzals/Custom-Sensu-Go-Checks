@@ -1,4 +1,4 @@
-#
+# TITLE:
 #   check-app-pool.ps1
 #
 # DESCRIPTION:
@@ -36,7 +36,7 @@ Param(
 [int]$intResult = 0 
 # Get list of Application Pools that are stopped.
 # This one only grabs name and State/Status
-$ApplicationPool=Get-IISAppPool | Select-Object Name,State | Where {$_.Name -like "$AppPool"} 
+$ApplicationPool= Get-IISAppPool | Select-Object Name,State | Where {$_.Name -like "$AppPool"} 
 #Check for NULL first
 $NullCheck= $ApplicationPool -eq "" -or $ApplicationPool -eq $null
 #Get CheckResult
@@ -46,15 +46,15 @@ IF ($NullCheck -eq "True"){
 # If no Null Value was returned Continue with script
 ELSEIF ($ApplicationPool.state -eq 'Stopped') {
 # Set the error level to 2 (critical) 
-            $CheckResult = 2 
+            		$CheckResult = 2 
 			}
 ELSEIF ($ApplicationPool.state -eq 'Started') {
 			$CheckResult = 0
-            } 
+            		} 
 ELSE { 
 			write-host "Something has exploded"
 			exit 2
-            } 
+            		} 
 # Handling of errors base of value of check result
 Switch ($CheckResult) { 
     # Default/no errors 
