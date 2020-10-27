@@ -1,8 +1,8 @@
-#
+# TITLE:
 #   check-windows-updates.ps1
 #
 # DESCRIPTION:
-#   This plugin collects the name, state/status of the Apppool in IIS, with functionality for missing/or mispelled apppools
+#   This plugin collects currently missing updates and catalougues wether they are security, rollup updates or general updates.
 #
 # OUTPUT:
 #   plain text
@@ -22,8 +22,8 @@
 #   Copyright 2020 sensu-plugins
 #   Released under the same terms as Sensu (the MIT license); see LICENSE for details.
 #
-#   Windows Updates Checks optimized by Fabio
-# Parsing of Sensu Variable to powershell
+# Windows Updates Checks optimized by Fabio
+
 [int]$intResult = 0 
 #Grabs all updates waiting
 $data = {@()}.Invoke(); $upS = New-Object -ComObject Microsoft.Update.Session; $srch = $upS.CreateupdateSearcher();
@@ -32,28 +32,6 @@ $data = {@()}.Invoke(); $upS = New-Object -ComObject Microsoft.Update.Session; $
                $obj | Add-Member -MemberType NoteProperty -Name RebootRequired -Value $_.RebootRequired;  $obj_cats = {@()}.Invoke(); $_.Categories |
                 ForEach-Object { $obj_cats.Add($_.Name) }; $obj | Add-Member -MemberType NoteProperty -Name Categories -Value $obj_cats;
                $obj | Add-Member -MemberType NoteProperty -Name KBArticleID -Value $_.KBArticleIDs; $data.Add($obj)}; 
-			   
-#Example Output
-<# PS C:\Users\adminfafi> $data
-
-Title                                                                                            RebootRequired Categories                                         KBArticleID
------                                                                                            -------------- ----------                                         -----------
-Microsoft Silverlight (KB4481252)                                                                         False {Feature Packs, Silverlight}                       System.__ComObject
-Security Update for SQL Server 2017 RTM GDR (KB4505224)                                                   False {Microsoft SQL Server 2017, Security Updates}      System.__ComObject
-SQL Server 2017 RTM Cumulative Update (CU) 22 KB4577467                                                   False {Microsoft SQL Server 2017, Updates}               System.__ComObject
-2020-10 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4580346)                       False {Security Updates, Windows Server 2016}            System.__ComObject
-Security Intelligence Update for Microsoft Defender Antivirus - KB2267602 (Version 1.325.1502.0)          False {Definition Updates, Microsoft Defender Antivirus} System.__ComObject
-
-PS C:\Users\adminfafi> $data | where{ $_.Categories -like "*security*"}
-
-Title                                                                               RebootRequired Categories                                    KBArticleID
------                                                                               -------------- ----------                                    -----------
-Security Update for SQL Server 2017 RTM GDR (KB4505224)                                      False {Microsoft SQL Server 2017, Security Updates} System.__ComObject
-2020-10 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4580346)          False {Security Updates, Windows Server 2016}       System.__ComObject
-
-PS C:\Users\adminfafi> $SecUpdates.count
-2
- #>
 
 #TotalUpdates
 $Total = $data.count
@@ -74,7 +52,7 @@ IF (($SecurityUpdates.count -le '1') -and ($RollupsUpdates.count -le '1') -and (
 ELSEIF (($SecurityUpdates.count -ge '2') -or ($RollupsUpdates.count -ge '2') -or ($TotalTrimmed -ge '4')) {
 # Set the error level to 2 (critical) 
 			$CheckResult = 2
-            } 
+            		} 
 #If any updates hit the warning threshold
 ELSEIF (($SecurityUpdates.count -ge '1') -or ($RollupsUpdates.count -ge '1') -or ($TotalTrimmed -ge '1')) {
 # Set the error level to 1 (warning) 
@@ -83,7 +61,7 @@ ELSEIF (($SecurityUpdates.count -ge '1') -or ($RollupsUpdates.count -ge '1') -or
 ELSE { 
 			write-host "Something has exploded"
 			exit 3
-            } 
+            		} 
 
 <# write-host $CheckResult
 pause #>
